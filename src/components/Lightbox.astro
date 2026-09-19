@@ -1,0 +1,102 @@
+---
+/**
+ * Site-wide lightbox. Mounted once in Base.astro; any <a data-lightbox="set">
+ * opens it. Links sharing a set get prev/next. No dependencies.
+ * Keyboard: Esc closes, ←/→ navigate. Click backdrop to close. Swipe on touch.
+ */
+import Icon from './Icon.astro';
+---
+<dialog
+  id="lightbox"
+  class="m-auto h-dvh w-dvw max-h-none max-w-none bg-black/95 text-white p-0 backdrop:bg-black/80 open:flex flex-col items-center justify-center"
+  aria-label="Photo viewer"
+>
+  <button type="button" data-lb-close class="absolute top-4 right-4 z-10 inline-flex h-12 w-12 items-center justify-center bg-apex-black/70 hover:bg-apex-red rounded-apex transition-colors" aria-label="Close">
+    <Icon name="close" class="w-6 h-6" />
+  </button>
+  <button type="button" data-lb-prev class="absolute left-2 md:left-5 top-1/2 -translate-y-1/2 z-10 inline-flex h-12 w-12 items-center justify-center bg-apex-black/70 hover:bg-apex-red rounded-apex transition-colors" aria-label="Previous photo">
+    <Icon name="chevron" class="w-6 h-6 rotate-180" />
+  </button>
+  <button type="button" data-lb-next class="absolute right-2 md:right-5 top-1/2 -translate-y-1/2 z-10 inline-flex h-12 w-12 items-center justify-center bg-apex-black/70 hover:bg-apex-red rounded-apex transition-colors" aria-label="Next photo">
+    <Icon name="chevron" class="w-6 h-6" />
+  </button>
+
+  <figure class="m-0 flex h-full w-full flex-col items-center justify-center p-4 md:p-12">
+    <img data-lb-img src="" alt="" class="max-h-[calc(100dvh-7rem)] max-w-full object-contain select-none" draggable="false" />
+    <figcaption class="mt-3 flex items-center gap-4 text-sm text-apex-chrome">
+      <span data-lb-caption></span>
+      <span data-lb-count class="eyebrow text-xs text-apex-gold"></span>
+    </figcaption>
+  </figure>
+</dialog>
+
+<script>
+  const dlg = document.getElementById('lightbox') as HTMLDialogElement | null;
+  if (dlg) {
+    const img = dlg.querySelector<HTMLImageElement>('[data-lb-img]')!;
+    const cap = dlg.querySelector<HTMLElement>('[data-lb-caption]')!;
+    const count = dlg.querySelector<HTMLElement>('[data-lb-count]')!;
+    const prevBtn = dlg.querySelector<HTMLButtonElement>('[data-lb-prev]')!;
+    const nextBtn = dlg.querySelector<HTMLButtonElement>('[data-lb-next]')!;
+
+    let set: HTMLAnchorElement[] = [];
+    let i = 0;
+    let opener: HTMLElement | null = null;
+
+    const show = (n: number) => {
+      i = (n + set.length) % set.length;
+      const a = set[i];
+      img.src = a.href;
+      img.alt = a.dataset.alt ?? '';
+      cap.textContent = a.dataset.alt ?? '';
+      count.textContent = set.length > 1 ? `${i + 1} / ${set.length}` : '';
+      prevBtn.hidden = nextBtn.hidden = set.length < 2;
+      // warm the neighbours
+      for (const k of [i + 1, i - 1]) new Image().src = set[(k + set.length) % set.length].href;
+    };
+
+    const open = (a: HTMLAnchorElement) => {
+      set = Array.from(document.querySelectorAll<HTMLAnchorElement>(`a[data-lightbox="${a.dataset.lightbox}"]`));
+      opener = a;
+      show(set.indexOf(a));
+      dlg.showModal();
+      document.body.style.overflow = 'hidden';
+    };
+
+    const close = () => {
+      dlg.close();
+      document.body.style.overflow = '';
+      img.src = '';
+      opener?.focus();
+    };
+
+    document.addEventListener('click', (e) => {
+      const a = (e.target as Element).closest<HTMLAnchorElement>('a[data-lightbox]');
+      if (!a) return;
+      e.preventDefault();
+      open(a);
+    });
+
+    dlg.querySelector('[data-lb-close]')!.addEventListener('click', close);
+    prevBtn.addEventListener('click', () => show(i - 1));
+    nextBtn.addEventListener('click', () => show(i + 1));
+    dlg.addEventListener('close', () => { document.body.style.overflow = ''; });
+    // backdrop click (dialog itself, not its children)
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) close(); });
+    dlg.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') show(i - 1);
+      else if (e.key === 'ArrowRight') show(i + 1);
+      else if (e.key === 'Escape') { e.preventDefault(); close(); }
+    });
+    // native Esc (cancel) — route through close() so focus returns to the tile
+    dlg.addEventListener('cancel', (e) => { e.preventDefault(); close(); });
+
+    // swipe
+    let x0 = 0;
+    dlg.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; }, { passive: true });
+    dlg.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - x0;
+      if (Math.abs(dx) > 50) show(dx < 0 ? i + 1 : i - 1);
+    });
+  }
+</script>

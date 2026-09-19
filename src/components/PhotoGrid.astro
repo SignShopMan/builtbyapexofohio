@@ -1,22 +1,40 @@
 ---
-/** Uniform 16:9 grid — top-down drone shots tile best (guide §8.3). */
-import { Image } from 'astro:assets';
+/**
+ * Uniform 16:9 grid — top-down drone shots tile best (guide §8.3).
+ * Every tile opens in the shared <Lightbox>; tiles in the same grid form one
+ * prev/next set. Lightbox.astro is mounted once in Base.astro.
+ */
+import { Image, getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 interface Props { photos: { src: ImageMetadata; alt: string }[]; cols?: 2 | 3 | 4 }
 const { photos, cols = 3 } = Astro.props;
 const colClass = { 2: 'sm:grid-cols-2', 3: 'sm:grid-cols-2 lg:grid-cols-3', 4: 'sm:grid-cols-2 lg:grid-cols-4' }[cols];
+
+// Full-size version for the lightbox (capped at 1920 wide, well under the 2048 originals)
+const full = await Promise.all(
+  photos.map((p) => getImage({ src: p.src, width: Math.min(1920, p.src.width), format: 'webp', quality: 82 })),
+);
+const setId = `pg-${Math.random().toString(36).slice(2, 8)}`;
 ---
-<ul class:list={['grid gap-3 md:gap-4', colClass]}>
-  {photos.map(({ src, alt }) => (
+<ul class:list={['grid gap-3 md:gap-4', colClass]} data-lightbox-set={setId}>
+  {photos.map(({ src, alt }, i) => (
     <li class="aspect-video overflow-hidden bg-apex-charcoal">
-      <Image
-        src={src}
-        alt={alt}
-        widths={[480, 768, 1024]}
-        sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-        loading="lazy"
-        class="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
-      />
+      <a
+        href={full[i].src}
+        data-lightbox={setId}
+        data-alt={alt}
+        class="group block h-full w-full focus-visible:outline-2 focus-visible:outline-apex-gold"
+        aria-label={`View larger: ${alt}`}
+      >
+        <Image
+          src={src}
+          alt={alt}
+          widths={[480, 768, 1024]}
+          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+          loading="lazy"
+          class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+      </a>
     </li>
   ))}
 </ul>
