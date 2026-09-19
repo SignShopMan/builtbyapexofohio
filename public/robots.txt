@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://higherapexnow.com/sitemap-index.xml

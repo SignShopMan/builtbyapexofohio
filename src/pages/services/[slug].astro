@@ -1,0 +1,80 @@
+---
+import Base from '../../layouts/Base.astro';
+import Hero from '../../components/Hero.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import PhotoGrid from '../../components/PhotoGrid.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Button from '../../components/Button.astro';
+import Icon from '../../components/Icon.astro';
+import { services } from '../../data/services';
+import { site } from '../../data/site';
+
+export function getStaticPaths() {
+  return services.map((service) => ({ params: { slug: service.slug }, props: { service } }));
+}
+const { service } = Astro.props;
+const others = services.filter((s) => s.slug !== service.slug).slice(0, 3);
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: service.name,
+  serviceType: service.name,
+  provider: { '@type': 'RoofingContractor', name: site.legalName, telephone: site.phone },
+  areaServed: site.serviceArea.map((name) => ({ '@type': 'City', name })),
+  description: service.blurb,
+};
+---
+<Base title={service.name} description={`${service.blurb} Serving ${site.address.locality}, ${site.address.county}, and surrounding Ohio communities. Free estimates.`} schema={schema}>
+  <Hero compact image={service.hero} alt={`${service.name} by ${site.name}`} eyebrow={service.name} title={service.name} lead={service.blurb} />
+
+  <section class="bg-white py-20 md:py-28">
+    <div class="container-apex grid gap-12 lg:grid-cols-[1fr_380px]">
+      <div>
+        <p class="text-lg md:text-xl text-apex-charcoal leading-relaxed">{service.intro}</p>
+        <h2 class="h3 text-apex-charcoal mt-10">What’s included</h2>
+        <ul class="mt-5 grid gap-3 sm:grid-cols-2">
+          {service.bullets.map((b) => (
+            <li class="flex items-start gap-3">
+              <span class="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center bg-apex-red text-white clip-badge">
+                <Icon name="check" class="w-3.5 h-3.5" />
+              </span>
+              <span class="text-apex-charcoal">{b}</span>
+            </li>
+          ))}
+        </ul>
+        {service.gallery.length > 0 && (
+          <div class="mt-14">
+            <SectionHeading eyebrow="Recent work" title={`${service.name} jobs`} />
+            <div class="mt-8">
+              <PhotoGrid photos={service.gallery.map((src) => ({ src, alt: `${service.name} project by ${site.name}` }))} cols={2} />
+            </div>
+          </div>
+        )}
+      </div>
+
+      <aside class="lg:sticky lg:top-28 self-start">
+        <div class="bg-apex-black text-white p-7 clip-corner">
+          <p class="eyebrow text-apex-gold">Free estimate</p>
+          <p class="mt-2 font-display font-black text-2xl">Let’s take a look.</p>
+          <p class="mt-3 text-apex-chrome text-sm leading-relaxed">Call, text, or send a message. We’ll come out, give you a straight price, and you decide from there.</p>
+          <div class="mt-6 flex flex-col gap-3">
+            <Button href={site.phoneHref}>Call {site.phone}</Button>
+            <Button href="/contact" variant="secondary">Request an estimate</Button>
+          </div>
+          <p class="mt-6 text-xs text-apex-chrome-shadow">0% financing available for qualified customers.</p>
+        </div>
+        <div class="mt-5 bg-apex-gray-light p-6">
+          <p class="eyebrow text-apex-red">More services</p>
+          <ul class="mt-3 space-y-2">
+            {others.map((o) => (
+              <li><a href={`/services/${o.slug}`} class="font-display font-bold text-apex-charcoal hover:text-apex-red transition-colors">{o.name}</a></li>
+            ))}
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <CtaBand variant="financing" />
+</Base>

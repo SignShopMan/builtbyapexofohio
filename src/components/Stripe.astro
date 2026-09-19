@@ -1,0 +1,10 @@
+---
+/** Red-over-gold divider from the truck wrap (guide §6.2). Decorative only. */
+interface Props { class?: string }
+const { class: cls = '' } = Astro.props;
+---
+<div aria-hidden="true" class={cls}>
+  <div class="h-1.5 bg-apex-red"></div>
+  <div class="h-1 bg-transparent"></div>
+  <div class="h-1 bg-apex-gold"></div>
+</div>

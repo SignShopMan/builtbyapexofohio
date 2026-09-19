@@ -1,0 +1,89 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../data/site';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Path to an OG image under /public, or an absolute URL */
+  ogImage?: string;
+  /** Extra JSON-LD to merge alongside the LocalBusiness schema */
+  schema?: Record<string, unknown>;
+}
+
+const {
+  title,
+  description = site.description,
+  ogImage = '/og-default.jpg',
+  schema,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogUrl = new URL(ogImage, Astro.site);
+const fullTitle = title === site.name ? `${site.name} | Roofing, Siding & Gutters in Logan County, OH` : `${title} | ${site.name}`;
+
+const localBusiness = {
+  '@context': 'https://schema.org',
+  '@type': 'RoofingContractor',
+  name: site.legalName,
+  url: site.url,
+  telephone: site.phone,
+  email: site.email,
+  image: new URL('/og-default.jpg', Astro.site).toString(),
+  logo: new URL('/brand/apex-emblem-transparent.png', Astro.site).toString(),
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: site.address.locality,
+    addressRegion: site.address.region,
+    addressCountry: 'US',
+  },
+  areaServed: site.serviceArea.map((name) => ({ '@type': 'City', name })),
+  sameAs: [site.facebook],
+  priceRange: '$$',
+};
+---
+
+<!doctype html>
+<html lang="en" class="scroll-pt-20">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#000000" />
+
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(localBusiness)} />
+    {schema && <script type="application/ld+json" set:html={JSON.stringify(schema)} />}
+  </head>
+  <body class="min-h-dvh flex flex-col">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:bg-apex-red focus:text-white focus:px-4 focus:py-2"
+    >
+      Skip to content
+    </a>
+    <Header />
+    <main id="main" class="flex-1">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

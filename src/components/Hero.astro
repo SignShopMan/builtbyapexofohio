@@ -1,0 +1,50 @@
+---
+/**
+ * Full-bleed photo hero with black overlay, gold eyebrow, black-italic H1 (guide §11.1).
+ * Pass `compact` for interior pages.
+ */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import Button from './Button.astro';
+import { site } from '../data/site';
+
+interface Props {
+  image: ImageMetadata;
+  alt: string;
+  eyebrow?: string;
+  title: string;
+  lead?: string;
+  compact?: boolean;
+  cta?: boolean;
+}
+const { image, alt, eyebrow = site.tagline, title, lead, compact = false, cta = true } = Astro.props;
+---
+<section class:list={['relative isolate overflow-hidden bg-apex-black', compact ? 'clip-diag-b' : 'clip-diag-b']}>
+  <Image
+    src={image}
+    alt={alt}
+    widths={[640, 1024, 1600, 2048]}
+    sizes="100vw"
+    loading="eager"
+    fetchpriority="high"
+    class="absolute inset-0 -z-10 h-full w-full object-cover"
+  />
+  <div class="absolute inset-0 -z-10 bg-photo-overlay"></div>
+  <div class="absolute inset-0 -z-10 bg-photo-overlay-y md:hidden"></div>
+
+  <div class:list={['container-apex', compact ? 'py-20 md:py-28 pb-28 md:pb-36' : 'py-24 md:py-36 lg:py-44 pb-32 md:pb-44']}>
+    <div class="max-w-3xl">
+      {eyebrow && <p class="eyebrow text-apex-gold">{eyebrow}</p>}
+      <h1 class:list={['h-display text-white mt-3', compact ? 'text-4xl md:text-5xl lg:text-6xl' : 'text-4xl md:text-6xl lg:text-7xl']}>
+        <slot name="title">{title}</slot>
+      </h1>
+      {lead && <p class="mt-6 text-lg md:text-xl text-apex-chrome max-w-2xl leading-relaxed">{lead}</p>}
+      {cta && (
+        <div class="mt-8 flex flex-wrap gap-3">
+          <Button href="/contact" size="lg">Get a Free Estimate</Button>
+          <Button href={site.phoneHref} variant="secondary" size="lg">Call or Text {site.phone}</Button>
+        </div>
+      )}
+    </div>
+  </div>
+</section>

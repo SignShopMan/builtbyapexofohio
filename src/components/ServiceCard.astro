@@ -1,0 +1,21 @@
+---
+/** Black card with one clipped corner, red icon circle, gold chevron link (guide §11.3). */
+import Icon from './Icon.astro';
+import type { Service } from '../data/services';
+interface Props { service: Service }
+const { service } = Astro.props;
+---
+<article class="group bg-apex-black text-white p-6 md:p-7 clip-corner flex flex-col">
+  <span class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-apex-red">
+    <Icon name={service.icon} class="w-6 h-6" />
+  </span>
+  <h3 class="h3 mt-5">{service.name}</h3>
+  <p class="mt-2 text-apex-chrome leading-relaxed flex-1">{service.blurb}</p>
+  <a
+    href={`/services/${service.slug}`}
+    class="mt-5 inline-flex items-center gap-1 text-apex-gold font-display font-bold uppercase tracking-eyebrow text-xs group-hover:gap-2 transition-all"
+  >
+    Learn more <Icon name="chevron" class="w-3.5 h-3.5" />
+    <span class="sr-only">about {service.name}</span>
+  </a>
+</article>

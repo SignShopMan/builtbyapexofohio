@@ -1,0 +1,101 @@
+@import "tailwindcss";
+@import "@fontsource-variable/montserrat";
+
+/* ------------------------------------------------------------------
+   Apex Exteriors Services — design tokens
+   Source of truth: ../../BRAND-GUIDE.md §5 (color), §7 (type), §11 (web)
+   Tailwind v4 reads these into utilities: bg-apex-red, text-apex-gold,
+   font-display, tracking-eyebrow, etc.
+------------------------------------------------------------------- */
+@theme {
+  /* Core palette — exact values from the vector production files */
+  --color-apex-black: #000000;
+  --color-apex-charcoal: #231f20;
+  --color-apex-red: #d01215;
+  --color-apex-red-deep: #a80e11;
+  --color-apex-red-dark: #92080f;
+  --color-apex-gold: #e7c263;
+  --color-apex-gold-bronze: #b2842f;
+  --color-apex-gold-dark: #8a6420;
+  --color-apex-chrome: #bcbec0;
+  --color-apex-chrome-light: #fcfcfc;
+  --color-apex-chrome-shadow: #7a7b7e;
+  --color-apex-gray-light: #f4f5f5;
+
+  /* Type */
+  --font-display: "Montserrat Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Montserrat Variable", ui-sans-serif, system-ui, sans-serif;
+  --tracking-eyebrow: 0.12em;
+  --tracking-button: 0.06em;
+
+  /* Shape — this brand is sharp, not soft */
+  --radius-apex: 4px;
+
+  /* Chrome gradient (accent only — never body text) */
+  --background-image-chrome: linear-gradient(
+    180deg,
+    #fcfcfc 0%, #bec0c2 6%, #f4f5f5 45%, #fcfcfc 50%,
+    #7a7b7e 51%, #8a8b8d 60%, #b9b9bb 80%, #d8d8d9 95%, #fcfcfc 100%
+  );
+  --background-image-photo-overlay: linear-gradient(
+    90deg, rgb(0 0 0 / 0.85) 0%, rgb(0 0 0 / 0.55) 50%, rgb(0 0 0 / 0.25) 100%
+  );
+  --background-image-photo-overlay-y: linear-gradient(
+    180deg, rgb(0 0 0 / 0.35) 0%, rgb(0 0 0 / 0.75) 100%
+  );
+}
+
+/* Angular cuts — the brand's signature shape language (guide §6.1) */
+@utility clip-diag-b {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 3rem), 0 100%);
+}
+@utility clip-diag-t {
+  clip-path: polygon(0 3rem, 100% 0, 100% 100%, 0 100%);
+}
+@utility clip-corner {
+  clip-path: polygon(0 0, calc(100% - 1.25rem) 0, 100% 1.25rem, 100% 100%, 0 100%);
+}
+@utility clip-badge {
+  clip-path: polygon(0.75rem 0, 100% 0, calc(100% - 0.75rem) 100%, 0 100%);
+}
+
+/* Chrome text — for a single hero number or stat, never paragraphs */
+@utility text-chrome {
+  background-image: var(--background-image-chrome);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-apex-black text-white font-sans antialiased;
+  }
+  ::selection {
+    @apply bg-apex-red text-white;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-apex-gold;
+  }
+}
+
+@layer components {
+  .eyebrow {
+    @apply font-display font-bold uppercase tracking-eyebrow text-sm;
+  }
+  .h-display {
+    @apply font-display font-black italic uppercase leading-[0.95];
+  }
+  .h2 {
+    @apply font-display font-extrabold uppercase leading-tight text-3xl md:text-4xl lg:text-5xl;
+  }
+  .h3 {
+    @apply font-display font-bold text-xl md:text-2xl;
+  }
+  .container-apex {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+}

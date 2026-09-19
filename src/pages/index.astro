@@ -1,0 +1,152 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import TrustBar from '../components/TrustBar.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import PhotoGrid from '../components/PhotoGrid.astro';
+import BeforeAfter from '../components/BeforeAfter.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Button from '../components/Button.astro';
+import Icon from '../components/Icon.astro';
+import { site } from '../data/site';
+import { services } from '../data/services';
+
+// Homepage hero — guide §8.3 pick
+import hero from '../assets/photos/roofing-shingle/roofing-shingle-34.jpg';
+// Proof grid — top-down drone shots tile best
+import g1 from '../assets/photos/roofing-shingle/roofing-shingle-27.jpg';
+import g2 from '../assets/photos/roofing-shingle/roofing-shingle-28.jpg';
+import g3 from '../assets/photos/roofing-metal/roofing-metal-02.jpg';
+import g4 from '../assets/photos/roofing-shingle/roofing-shingle-52.jpg';
+import g5 from '../assets/photos/pole-barns/pole-barns-03.jpg';
+import g6 from '../assets/photos/roofing-shingle/roofing-shingle-54.jpg';
+import before from '../assets/photos/before-after/before-after-03.jpg';
+import after from '../assets/photos/before-after/before-after-02.jpg';
+
+const proof = [
+  { src: g1, alt: 'Drone view of a new dark gray hip roof in Logan County, Ohio' },
+  { src: g2, alt: 'Top-down drone view of a new cross-hip shingle roof' },
+  { src: g3, alt: 'New black standing-seam metal roof on a two-story home' },
+  { src: g4, alt: 'Top-down view of a new black shingle roof on a farmhouse' },
+  { src: g5, alt: 'Burgundy and tan pole barn beside an Ohio cornfield' },
+  { src: g6, alt: 'New gray shingle roof on a Victorian home with turret' },
+];
+
+const steps = [
+  { n: '01', title: 'Call or text', body: 'Tell us what’s going on. We’ll set a time that works for you.' },
+  { n: '02', title: 'Free estimate', body: 'We come out, look it over, and give you a straight price. No pressure.' },
+  { n: '03', title: 'We do the work', body: 'Our crew shows up when we say, does it right, and cleans up after.' },
+  { n: '04', title: 'You get the photos', body: 'Drone shots of the finished job so you can see every inch.' },
+];
+---
+
+<Base title={site.name}>
+  <Hero
+    image={hero}
+    alt="Drone view of a new black architectural shingle roof on a cross-gable home in Logan County, Ohio"
+    title="Roofing, Siding & Gutters Done Right."
+    lead="Local, licensed & insured exterior contractors serving Bellefontaine, Logan County, and surrounding Ohio communities. Free estimates. 0% financing available."
+  />
+
+  <TrustBar />
+
+  <!-- Services -->
+  <section class="bg-white py-20 md:py-28">
+    <div class="container-apex">
+      <SectionHeading
+        eyebrow="What we do"
+        title="One local crew for the whole exterior."
+        lead="Roofing, gutters, and siding are our bread and butter. Need a pole barn, a barndominium, or a concrete pad to go with it? Same crew, same standards."
+      />
+      <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {services.map((s) => <ServiceCard service={s} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- Proof -->
+  <section class="bg-apex-gray-light py-20 md:py-28">
+    <div class="container-apex">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+        <SectionHeading
+          eyebrow="Our work"
+          title="Real roofs. Real houses. Real close to you."
+          lead="Every job gets a drone flyover when we’re done. Here’s a few from around Logan County."
+        />
+        <Button href="/gallery" variant="primary" class="shrink-0">See the gallery</Button>
+      </div>
+      <div class="mt-12">
+        <PhotoGrid photos={proof} cols={3} />
+      </div>
+    </div>
+  </section>
+
+  <CtaBand variant="financing" />
+
+  <!-- Before / after -->
+  <section class="bg-white py-20 md:py-28">
+    <div class="container-apex grid gap-12 lg:grid-cols-2 lg:items-center">
+      <div>
+        <SectionHeading
+          eyebrow="Siding"
+          title="Same house. Whole new look."
+          lead="New siding, soffit, fascia, and trim turned this white two-story into a modern charcoal home — and ended the repainting for good."
+        />
+        <div class="mt-8">
+          <Button href="/services/siding">Siding options</Button>
+        </div>
+      </div>
+      <BeforeAfter before={before} after={after} alt="Two-story home siding replacement" />
+    </div>
+  </section>
+
+  <!-- Process -->
+  <section class="bg-apex-charcoal text-white py-20 md:py-28">
+    <div class="container-apex">
+      <SectionHeading dark eyebrow="How it works" title="No runaround. Just a roof." center />
+      <ol class="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        {steps.map((s) => (
+          <li class="relative border-t-4 border-apex-red pt-6">
+            <span class="font-display font-black text-5xl text-chrome">{s.n}</span>
+            <h3 class="h3 mt-3">{s.title}</h3>
+            <p class="mt-2 text-apex-chrome leading-relaxed">{s.body}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- Local + social proof -->
+  <section class="bg-white py-20 md:py-28">
+    <div class="container-apex grid gap-12 lg:grid-cols-2 lg:items-center">
+      <SectionHeading
+        eyebrow="Local & trusted"
+        title="Your neighbors already hired us."
+        lead={`${site.social.rating} on ${site.social.platform} from ${site.social.reviewCount} reviews. We’re a ${site.address.county} company — the same crew you’ll see at the gas station shows up to your house.`}
+      />
+      <div class="bg-apex-black text-white p-8 md:p-10 clip-corner">
+        <p class="eyebrow text-apex-gold">Proudly serving</p>
+        <ul class="mt-4 grid grid-cols-2 gap-x-6 gap-y-2 font-display font-bold text-lg">
+          {site.serviceArea.map((c) => (
+            <li class="flex items-center gap-2">
+              <Icon name="chevron" class="w-4 h-4 text-apex-red" />
+              {c}
+            </li>
+          ))}
+        </ul>
+        <p class="mt-5 text-apex-chrome text-sm">…and surrounding Ohio communities.</p>
+        <a
+          href={site.facebook}
+          target="_blank"
+          rel="noopener"
+          class="mt-6 inline-flex items-center gap-2 text-apex-gold font-display font-bold uppercase tracking-eyebrow text-xs hover:text-white transition-colors"
+        >
+          <Icon name="facebook" class="w-4 h-4" /> Read reviews on Facebook
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand variant="estimate" />
+</Base>

@@ -1,0 +1,16 @@
+---
+import Base from '../layouts/Base.astro';
+import Button from '../components/Button.astro';
+---
+<Base title="Page not found">
+  <section class="bg-apex-black text-white py-32">
+    <div class="container-apex text-center">
+      <p class="font-display font-black text-8xl md:text-9xl text-chrome">404</p>
+      <h1 class="h-display text-3xl md:text-4xl mt-4">That page blew off in the storm.</h1>
+      <div class="mt-8 flex justify-center gap-3">
+        <Button href="/">Back home</Button>
+        <Button href="/contact" variant="secondary">Get a free estimate</Button>
+      </div>
+    </div>
+  </section>
+</Base>

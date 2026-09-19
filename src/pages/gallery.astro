@@ -1,0 +1,46 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import PhotoGrid from '../components/PhotoGrid.astro';
+import CtaBand from '../components/CtaBand.astro';
+import type { ImageMetadata } from 'astro';
+import hero from '../assets/photos/roofing-shingle/roofing-shingle-52.jpg';
+
+// Pull every photo by category. Low-res files are excluded in the manifest notes (guide §8.4).
+const all = import.meta.glob<{ default: ImageMetadata }>('../assets/photos/**/*.jpg', { eager: true });
+const exclude = new Set(['roofing-shingle-38', 'roofing-shingle-40', 'before-after-01']);
+
+const categories: { slug: string; title: string; alt: string }[] = [
+  { slug: 'roofing-shingle', title: 'Shingle roofing', alt: 'New architectural shingle roof' },
+  { slug: 'roofing-metal', title: 'Metal roofing', alt: 'New standing-seam metal roof' },
+  { slug: 'siding', title: 'Siding', alt: 'New siding installation' },
+  { slug: 'pole-barns', title: 'Pole barns', alt: 'Pole barn construction' },
+  { slug: 'commercial', title: 'Commercial', alt: 'Commercial roofing project' },
+  { slug: 'in-progress', title: 'On the job', alt: 'Roofing crew at work' },
+];
+
+const byCategory = categories.map((c) => ({
+  ...c,
+  photos: Object.entries(all)
+    .filter(([path]) => path.includes(`/${c.slug}/`) && ![...exclude].some((x) => path.includes(x)))
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([, mod]) => ({ src: mod.default, alt: `${c.alt} in Logan County, Ohio` })),
+}));
+---
+<Base title="Our Work" description="Drone photos of roofing, siding, metal roofing, and pole barn projects by Apex Exteriors Services around Bellefontaine and Logan County, Ohio.">
+  <Hero compact cta={false} image={hero} alt="Top-down drone view of a new dark gray shingle roof" eyebrow="Our work" title="Every job gets a flyover." lead="We fly a drone over every finished roof. Here’s what that looks like around Logan County." />
+
+  {byCategory.map((c, i) => c.photos.length > 0 && (
+    <section class:list={['py-16 md:py-20', i % 2 === 0 ? 'bg-white' : 'bg-apex-gray-light']} id={c.slug}>
+      <div class="container-apex">
+        <SectionHeading title={c.title} eyebrow={`${c.photos.length} photos`} />
+        <div class="mt-8">
+          <PhotoGrid photos={c.photos} cols={c.slug === 'roofing-shingle' ? 4 : 3} />
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <CtaBand variant="estimate" />
+</Base>

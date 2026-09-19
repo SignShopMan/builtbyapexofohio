@@ -1,0 +1,89 @@
+---
+import Base from '../layouts/Base.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Button from '../components/Button.astro';
+import Icon from '../components/Icon.astro';
+import { services } from '../data/services';
+import { site } from '../data/site';
+---
+<Base title="Free Estimate" description={`Request a free estimate from ${site.name}. Call or text ${site.phone}, email, or send a message. Serving ${site.address.county}, Ohio.`}>
+  <section class="bg-apex-black text-white py-16 md:py-24 clip-diag-b pb-28 md:pb-36">
+    <div class="container-apex">
+      <p class="eyebrow text-apex-gold">Contact</p>
+      <h1 class="h-display text-4xl md:text-6xl mt-3">Get a free estimate.</h1>
+      <p class="mt-5 text-lg text-apex-chrome max-w-2xl">Call, text, or fill out the form. We’ll get back to you fast and set up a time to come take a look — no pressure, no obligation.</p>
+    </div>
+  </section>
+
+  <section class="bg-white py-16 md:py-24">
+    <div class="container-apex grid gap-12 lg:grid-cols-[380px_1fr]">
+      <div class="space-y-5">
+        <a href={site.phoneHref} class="block bg-apex-black text-white p-6 clip-corner hover:bg-apex-charcoal transition-colors">
+          <p class="eyebrow text-apex-red">Call or text</p>
+          <p class="mt-1 font-display font-black text-3xl">{site.phone}</p>
+          <p class="mt-1 text-apex-chrome text-sm">Fastest way to reach us.</p>
+        </a>
+        <a href={`mailto:${site.email}`} class="block bg-apex-gray-light p-6 hover:bg-apex-chrome/40 transition-colors">
+          <p class="eyebrow text-apex-red">Email</p>
+          <p class="mt-1 font-display font-bold text-apex-charcoal break-all">{site.email}</p>
+        </a>
+        <a href={site.facebook} target="_blank" rel="noopener" class="block bg-apex-gray-light p-6 hover:bg-apex-chrome/40 transition-colors">
+          <p class="eyebrow text-apex-red">Facebook</p>
+          <p class="mt-1 font-display font-bold text-apex-charcoal flex items-center gap-2"><Icon name="facebook" class="w-5 h-5" /> Message us on Facebook</p>
+          <p class="mt-1 text-apex-charcoal/70 text-sm">{site.social.rating} · {site.social.reviewCount} reviews</p>
+        </a>
+        <div class="p-6 border-2 border-apex-gray-light">
+          <p class="eyebrow text-apex-red">Service area</p>
+          <p class="mt-2 text-sm text-apex-charcoal leading-relaxed">{site.serviceArea.join(', ')}, and surrounding Ohio communities.</p>
+        </div>
+      </div>
+
+      <div>
+        <SectionHeading eyebrow="Request an estimate" title="Tell us about the project." />
+        <!--
+          TODO: wire this form to a handler before launch. Options that work with a static host:
+          Netlify Forms (add `data-netlify="true"`), Formspree, or a Cloudflare Worker.
+          Until then it posts nowhere.
+        -->
+        <form class="mt-8 grid gap-5 sm:grid-cols-2" method="post" action="#" name="estimate">
+          <label class="grid gap-1.5">
+            <span class="eyebrow text-apex-charcoal text-xs">Name</span>
+            <input name="name" type="text" required autocomplete="name" class="border-2 border-apex-chrome px-4 py-3 rounded-apex focus:border-apex-red outline-none" />
+          </label>
+          <label class="grid gap-1.5">
+            <span class="eyebrow text-apex-charcoal text-xs">Phone</span>
+            <input name="phone" type="tel" required autocomplete="tel" class="border-2 border-apex-chrome px-4 py-3 rounded-apex focus:border-apex-red outline-none" />
+          </label>
+          <label class="grid gap-1.5">
+            <span class="eyebrow text-apex-charcoal text-xs">Email</span>
+            <input name="email" type="email" autocomplete="email" class="border-2 border-apex-chrome px-4 py-3 rounded-apex focus:border-apex-red outline-none" />
+          </label>
+          <label class="grid gap-1.5">
+            <span class="eyebrow text-apex-charcoal text-xs">City</span>
+            <input name="city" type="text" autocomplete="address-level2" class="border-2 border-apex-chrome px-4 py-3 rounded-apex focus:border-apex-red outline-none" />
+          </label>
+          <label class="grid gap-1.5 sm:col-span-2">
+            <span class="eyebrow text-apex-charcoal text-xs">What do you need?</span>
+            <select name="service" class="border-2 border-apex-chrome px-4 py-3 rounded-apex focus:border-apex-red outline-none bg-white">
+              {services.map((s) => <option value={s.slug}>{s.name}</option>)}
+              <option value="other">Something else</option>
+            </select>
+          </label>
+          <label class="grid gap-1.5 sm:col-span-2">
+            <span class="eyebrow text-apex-charcoal text-xs">Details</span>
+            <textarea name="message" rows="5" class="border-2 border-apex-chrome px-4 py-3 rounded-apex focus:border-apex-red outline-none" placeholder="Tell us about the house, what’s going on, and when you’d like it done."></textarea>
+          </label>
+          <label class="flex items-center gap-3 sm:col-span-2 text-sm text-apex-charcoal">
+            <input name="financing" type="checkbox" class="h-5 w-5 accent-apex-red" />
+            I’m interested in 0% financing
+          </label>
+          <div class="sm:col-span-2">
+            <button type="submit" class="inline-flex items-center justify-center font-display font-bold uppercase tracking-button rounded-apex bg-apex-red text-white hover:bg-apex-red-deep transition-colors text-base px-8 py-4">
+              Send my request
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+</Base>

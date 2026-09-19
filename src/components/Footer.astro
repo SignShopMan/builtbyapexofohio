@@ -1,0 +1,95 @@
+---
+import { site } from '../data/site';
+import { services } from '../data/services';
+import Icon from './Icon.astro';
+import Stripe from './Stripe.astro';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="bg-apex-black text-white">
+  <Stripe />
+  <div class="container-apex py-14 grid gap-10 md:grid-cols-2 lg:grid-cols-4">
+    <div class="lg:col-span-1">
+      <img
+        src="/brand/apex-emblem-transparent.png"
+        alt=""
+        width="200"
+        height="82"
+        class="h-16 w-auto"
+        loading="lazy"
+      />
+      <p class="mt-4 font-display font-black italic uppercase text-xl leading-tight">
+        {site.tagline}
+      </p>
+      <p class="mt-3 text-apex-chrome text-sm leading-relaxed">
+        Local work. Quality craftsmanship. Financing options that make your next project possible.
+      </p>
+      <ul class="mt-5 space-y-1.5 text-sm">
+        {site.trust.map((t) => (
+          <li class="flex items-center gap-2 text-apex-chrome">
+            <Icon name={t.icon} class="w-4 h-4 text-apex-gold" />
+            {t.label}
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="eyebrow text-apex-gold">Services</h2>
+      <ul class="mt-4 space-y-2">
+        {services.map((s) => (
+          <li>
+            <a href={`/services/${s.slug}`} class="text-white hover:text-apex-gold transition-colors">
+              {s.name}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="eyebrow text-apex-gold">Service Area</h2>
+      <p class="mt-4 text-apex-chrome text-sm leading-relaxed">
+        Proudly serving {site.address.locality}, {site.address.county}, and surrounding Ohio communities:
+      </p>
+      <ul class="mt-3 grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
+        {site.serviceArea.map((c) => <li>{c}, OH</li>)}
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="eyebrow text-apex-gold">Get a Free Estimate</h2>
+      <a
+        href={site.phoneHref}
+        class="mt-4 block font-display font-black text-2xl tracking-tight hover:text-apex-gold transition-colors"
+      >
+        {site.phone}
+      </a>
+      <p class="text-apex-chrome text-sm">Call or text</p>
+      <a
+        href={`mailto:${site.email}`}
+        class="mt-4 flex items-center gap-2 text-sm hover:text-apex-gold transition-colors break-all"
+      >
+        <Icon name="mail" class="w-4 h-4 shrink-0 text-apex-gold" />
+        {site.email}
+      </a>
+      <a
+        href={site.facebook}
+        rel="noopener"
+        target="_blank"
+        class="mt-3 flex items-center gap-2 text-sm hover:text-apex-gold transition-colors"
+      >
+        <Icon name="facebook" class="w-4 h-4 text-apex-gold" />
+        {site.social.rating} on {site.social.platform} ({site.social.reviewCount} reviews)
+      </a>
+    </div>
+  </div>
+
+  <div class="border-t border-apex-chrome-shadow/40">
+    <div class="container-apex py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-apex-chrome-shadow">
+      <p>&copy; {year} {site.legalName}. All rights reserved.</p>
+      <p>Licensed &amp; Insured &middot; {site.address.locality}, {site.address.region}</p>
+    </div>
+  </div>
+</footer>

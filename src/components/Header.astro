@@ -1,0 +1,103 @@
+---
+import { site } from '../data/site';
+import Icon from './Icon.astro';
+import Stripe from './Stripe.astro';
+
+const current = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isActive = (href: string) => current === href || (href !== '/' && current.startsWith(href));
+---
+
+<header class="sticky top-0 z-50 bg-apex-black">
+  <div class="container-apex flex items-center justify-between gap-6 py-3">
+    <a href="/" class="shrink-0" aria-label={`${site.name} home`}>
+      <img
+        src="/brand/apex-wordmark-lockup.svg"
+        alt={site.name}
+        width="220"
+        height="77"
+        class="h-12 w-auto md:h-14"
+        fetchpriority="high"
+      />
+    </a>
+
+    <nav class="hidden lg:flex items-center gap-7" aria-label="Primary">
+      {site.nav.map(({ label, href }) => (
+        <a
+          href={href}
+          class:list={[
+            'font-display font-semibold text-sm uppercase tracking-wide transition-colors hover:text-apex-gold',
+            isActive(href) ? 'text-apex-gold' : 'text-white',
+          ]}
+          aria-current={isActive(href) ? 'page' : undefined}
+        >
+          {label}
+        </a>
+      ))}
+    </nav>
+
+    <div class="hidden md:flex flex-col items-end leading-none">
+      <span class="eyebrow text-apex-red text-[11px]">Call or Text</span>
+      <a
+        href={site.phoneHref}
+        class="font-display font-black text-xl lg:text-2xl tracking-tight text-white hover:text-apex-gold transition-colors"
+      >
+        {site.phone}
+      </a>
+    </div>
+
+    <div class="flex items-center gap-3 lg:hidden">
+      <a
+        href={site.phoneHref}
+        class="md:hidden inline-flex items-center justify-center h-11 w-11 bg-apex-red text-white rounded-apex"
+        aria-label={`Call ${site.phone}`}
+      >
+        <Icon name="phone" class="w-5 h-5" />
+      </a>
+      <button
+        type="button"
+        id="nav-toggle"
+        class="inline-flex items-center justify-center h-11 w-11 text-white border-2 border-apex-chrome-shadow rounded-apex"
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+        aria-label="Open menu"
+      >
+        <Icon name="menu" class="w-6 h-6" />
+      </button>
+    </div>
+  </div>
+
+  <Stripe />
+
+  <nav id="mobile-nav" class="hidden lg:hidden bg-apex-charcoal border-t border-apex-chrome-shadow/40" aria-label="Mobile">
+    <ul class="container-apex py-2 divide-y divide-apex-chrome-shadow/30">
+      {site.nav.map(({ label, href }) => (
+        <li>
+          <a
+            href={href}
+            class:list={[
+              'block py-3.5 font-display font-bold uppercase tracking-wide',
+              isActive(href) ? 'text-apex-gold' : 'text-white',
+            ]}
+          >
+            {label}
+          </a>
+        </li>
+      ))}
+      <li>
+        <a href={site.phoneHref} class="block py-3.5 font-display font-black text-xl text-apex-gold">
+          {site.phone}
+        </a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<script>
+  const btn = document.getElementById('nav-toggle');
+  const nav = document.getElementById('mobile-nav');
+  btn?.addEventListener('click', () => {
+    const open = nav?.classList.toggle('hidden') === false;
+    btn.setAttribute('aria-expanded', String(open));
+    btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  });
+</script>

@@ -1,0 +1,39 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import TrustBar from '../components/TrustBar.astro';
+import CtaBand from '../components/CtaBand.astro';
+import PhotoGrid from '../components/PhotoGrid.astro';
+import { site } from '../data/site';
+import hero from '../assets/photos/siding/siding-03.jpg';
+import p1 from '../assets/photos/in-progress/in-progress-01.jpg';
+import p2 from '../assets/photos/in-progress/in-progress-06.jpg';
+import p3 from '../assets/photos/in-progress/in-progress-07.jpg';
+---
+<Base title="About" description={`${site.legalName} is a local, licensed & insured exterior contractor based in ${site.address.locality}, Ohio, serving ${site.address.county} and surrounding communities.`}>
+  <Hero compact image={hero} alt="Dark green ranch home with a new black shingle roof" eyebrow="About us" title="A Logan County crew that does it right." lead="We’re local, licensed & insured, and we take pride in exceeding expectations with reliable service and lasting results you can trust." />
+
+  <TrustBar />
+
+  <section class="bg-white py-20 md:py-28">
+    <div class="container-apex grid gap-12 lg:grid-cols-2 lg:items-center">
+      <div>
+        <SectionHeading eyebrow="Who we are" title="Craftsmanship, customer care, and a fair price." />
+        <div class="mt-6 space-y-4 text-lg text-apex-charcoal leading-relaxed">
+          <p>At {site.name} we deliver top-quality roofing, siding, and gutters with a focus on craftsmanship, customer care, and competitive pricing.</p>
+          <p>We’re based in {site.address.locality} and work across {site.address.county} and the surrounding communities. When you call, you talk to us — not a call center. When we show up, it’s the same crew every time.</p>
+          <p>We take pride in exceeding the expectations of our customers with reliable service and lasting results you can trust.</p>
+        </div>
+        <!-- TODO: owner/crew photo + names once the client provides them (guide §12 item 7) -->
+      </div>
+      <PhotoGrid photos={[
+        { src: p1, alt: 'Apex crew tearing off an old roof' },
+        { src: p2, alt: 'Crew installing new shingles on a two-story home' },
+        { src: p3, alt: 'Roofer on a ladder at a job site' },
+      ]} cols={2} />
+    </div>
+  </section>
+
+  <CtaBand variant="estimate" />
+</Base>

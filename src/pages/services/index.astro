@@ -1,0 +1,29 @@
+---
+import Base from '../../layouts/Base.astro';
+import Hero from '../../components/Hero.astro';
+import ServiceCard from '../../components/ServiceCard.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { services } from '../../data/services';
+import hero from '../../assets/photos/roofing-shingle/roofing-shingle-36.jpg';
+const core = services.filter((s) => s.core);
+const more = services.filter((s) => !s.core);
+---
+<Base title="Services" description="Roofing, siding, gutters, metal roofing, pole barns, barndominiums, additions, and concrete — one local, licensed & insured crew serving Logan County, Ohio.">
+  <Hero compact image={hero} alt="Drone view of a split-level home with a new black shingle roof" eyebrow="Services" title="Everything on the outside of your house." lead="Roofing, gutters, and siding are what we’re known for. Pole barns, barndominiums, additions, and concrete round it out." />
+
+  <section class="bg-white py-20 md:py-28">
+    <div class="container-apex">
+      <SectionHeading eyebrow="Core services" title="Roofing · Gutters · Siding" />
+      <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {core.map((s) => <ServiceCard service={s} />)}
+      </div>
+      <SectionHeading class="mt-20" eyebrow="Also" title="Barns, metal, concrete & more" />
+      <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {more.map((s) => <ServiceCard service={s} />)}
+      </div>
+    </div>
+  </section>
+
+  <CtaBand variant="estimate" />
+</Base>

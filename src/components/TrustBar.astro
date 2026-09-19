@@ -1,0 +1,16 @@
+---
+import { site } from '../data/site';
+import Icon from './Icon.astro';
+---
+<div class="bg-apex-charcoal text-white">
+  <ul class="container-apex grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-4 py-6">
+    {site.trust.map((t) => (
+      <li class="flex items-center gap-3">
+        <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center bg-apex-black clip-badge">
+          <Icon name={t.icon} class="w-4 h-4 text-apex-gold" />
+        </span>
+        <span class="font-display font-bold uppercase text-xs md:text-sm tracking-wide">{t.label}</span>
+      </li>
+    ))}
+  </ul>
+</div>

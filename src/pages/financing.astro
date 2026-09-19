@@ -1,0 +1,50 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Icon from '../components/Icon.astro';
+import { services } from '../data/services';
+import hero from '../assets/photos/roofing-shingle/roofing-shingle-01.jpg';
+---
+<Base title="0% Financing" description="0% financing available for qualified customers on roofing, siding, gutters, pole barns, and more from Apex Exteriors Services in Logan County, Ohio.">
+  <Hero compact image={hero} alt="Brick ranch with a new dark charcoal shingle roof" eyebrow="Financing" title="Your next project may be more affordable than you think." lead="0% financing for qualified customers. Get the project you want today with affordable monthly payments." />
+
+  <section class="bg-white py-20 md:py-28">
+    <div class="container-apex grid gap-12 lg:grid-cols-2 lg:items-start">
+      <div>
+        <SectionHeading eyebrow="How it works" title="Simple, straight, no surprises." />
+        <ol class="mt-8 space-y-6">
+          {[
+            ['Get your free estimate', 'We come out, look it over, and give you a real number.'],
+            ['Ask about financing', 'Tell us you’d like to finance. We’ll walk you through the options — it takes minutes.'],
+            ['Get approved', 'Qualified customers can get 0% financing. No need to cover the whole project up front.'],
+            ['We get to work', 'Same crew, same quality, same drone photos when it’s done.'],
+          ].map(([t, b], i) => (
+            <li class="flex gap-4">
+              <span class="font-display font-black text-3xl text-chrome shrink-0 w-12">0{i + 1}</span>
+              <div>
+                <h3 class="h3 text-apex-charcoal">{t}</h3>
+                <p class="mt-1 text-apex-charcoal/80 leading-relaxed">{b}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+        <p class="mt-8 text-sm text-apex-chrome-shadow">Financing subject to credit approval. Terms and availability may vary — ask us for current details.</p>
+      </div>
+      <div class="bg-apex-black text-white p-8 md:p-10 clip-corner">
+        <p class="eyebrow text-apex-gold">Financing available on</p>
+        <ul class="mt-5 space-y-3">
+          {services.map((s) => (
+            <li class="flex items-center gap-3 font-display font-bold text-lg">
+              <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-apex-red"><Icon name={s.icon} class="w-4 h-4" /></span>
+              {s.name}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand variant="estimate" />
+</Base>
