@@ -8,7 +8,7 @@ import PhotoGrid from '../components/PhotoGrid.astro';
 import { site } from '../data/site';
 import hero from '../assets/photos/siding/siding-03.jpg';
 import p1 from '../assets/photos/in-progress/in-progress-01.jpg';
-import p2 from '../assets/photos/in-progress/in-progress-06.jpg';
+import p2 from '../assets/photos/in-progress/in-progress-02.jpg';
 import p3 from '../assets/photos/in-progress/in-progress-07.jpg';
 ---
 <Base title="About" description={`${site.legalName} is a local, licensed & insured exterior contractor based in ${site.address.locality}, Ohio, serving ${site.address.county} and surrounding communities.`}>
@@ -29,7 +29,7 @@ import p3 from '../assets/photos/in-progress/in-progress-07.jpg';
       </div>
       <PhotoGrid photos={[
         { src: p1, alt: 'Apex crew tearing off an old roof' },
-        { src: p2, alt: 'Crew installing new shingles on a two-story home' },
+        { src: p2, alt: 'Synthetic underlayment going down before the new shingles' },
         { src: p3, alt: 'Roofer on a ladder at a job site' },
       ]} cols={2} />
     </div>
