@@ -1,4 +1,4 @@
-# higherapexnow.com — Apex Exteriors Services
+# builtbyapexofohio.com — Apex Exteriors Services
 
 Astro 7 + Tailwind v4 static site for Apex Exteriors Services LLC (Bellefontaine / Logan County, Ohio).
 
@@ -31,7 +31,7 @@ npm run preview
 ## Deploy
 
 Pushes to `main` build and deploy to GitHub Pages via `.github/workflows/deploy.yml`.
-`public/CNAME` pins the custom domain. In the repo settings → Pages, set **Source: GitHub Actions** and add `higherapexnow.com` as the custom domain, then point DNS:
+`public/CNAME` pins the custom domain. In the repo settings → Pages, set **Source: GitHub Actions** and add `builtbyapexofohio.com` as the custom domain, then point DNS:
 
 - `A` records for `@` → `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`
 - `CNAME` for `www` → `<github-user>.github.io`

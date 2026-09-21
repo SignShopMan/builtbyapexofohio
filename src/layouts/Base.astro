@@ -21,7 +21,10 @@ const {
   schema,
 } = Astro.props;
 
-const canonical = new URL(Astro.url.pathname, Astro.site);
+// build.format = 'file' makes pathname end in .html; canonical must match the
+// clean URLs in the nav and sitemap (GitHub Pages serves /about for about.html)
+const cleanPath = Astro.url.pathname.replace(/\/index\.html$/, '/').replace(/\.html$/, '');
+const canonical = new URL(cleanPath, Astro.site);
 const ogUrl = new URL(ogImage, Astro.site);
 const fullTitle = title === site.name ? `${site.name} | Roofing, Siding & Gutters in Logan County, OH` : `${title} | ${site.name}`;
 

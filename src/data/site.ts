@@ -5,8 +5,8 @@
 export const site = {
   name: 'Apex Exteriors Services',
   legalName: 'Apex Exteriors Services LLC',
-  domain: 'higherapexnow.com',
-  url: 'https://higherapexnow.com',
+  domain: 'builtbyapexofohio.com',
+  url: 'https://builtbyapexofohio.com',
   tagline: 'Local. Reliable. Trusted.',
   description:
     'Local, licensed & insured roofing, siding, gutter, and pole barn contractor serving Bellefontaine, Logan County, and surrounding Ohio communities. Free estimates. 0% financing available.',

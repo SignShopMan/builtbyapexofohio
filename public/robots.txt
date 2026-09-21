@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://higherapexnow.com/sitemap-index.xml
+Sitemap: https://builtbyapexofohio.com/sitemap-index.xml
