@@ -21,9 +21,12 @@ npm run preview
 | `src/styles/global.css` | Brand tokens (`@theme`), angular `clip-*` utilities, base styles |
 | `src/data/site.ts` | Phone, email, service area, nav, trust badges — change contact info here |
 | `src/data/services.ts` | Service pages content + which photos each one uses |
+| `src/data/financing.ts` | Payment calculator: credit tiers, illustrative APRs, terms, 0% promo — **update APRs from the Hearth dashboard** |
+| `src/components/PaymentCalculator.astro` | Monthly payment estimator on `/financing` (Apply button uses `site.hearthUrl` when set) |
+| `src/components/RoofEstimator.astro` | "How big is my roof?" estimator on `/roof-estimator`; emails/texts the summary to the business |
 | `src/layouts/Base.astro` | `<head>`, SEO/OG tags, LocalBusiness JSON-LD, header + footer |
 | `src/components/` | Hero, ServiceCard, CtaBand, TrustBar, PhotoGrid, BeforeAfter, Stripe, Button, Icon |
-| `src/pages/` | `/`, `/services`, `/services/[slug]`, `/gallery`, `/financing`, `/about`, `/contact`, 404 |
+| `src/pages/` | `/`, `/services`, `/services/[slug]`, `/gallery`, `/financing`, `/roof-estimator`, `/about`, `/contact`, 404 |
 | `src/assets/photos/` | Job photos (Astro optimizes only the ones that are imported) |
 | `public/brand/` | Logo SVG/PNG, stripe |
 | `public/` | Favicons, OG image, `CNAME`, `robots.txt` |
@@ -41,4 +44,6 @@ Pushes to `main` build and deploy to GitHub Pages via `.github/workflows/deploy.
 - [ ] Confirm phone number (guide §12 — 6204 vs 9523) in `src/data/site.ts`
 - [ ] Wire the contact form (`src/pages/contact.astro`) to Netlify Forms / Formspree / a Worker
 - [ ] Crew/owner photo for `/about`
+- [ ] Client's Hearth financing link → `hearthUrl` in `src/data/site.ts`
+- [ ] Sanity-check the illustrative APRs in `src/data/financing.ts` against what Hearth actually shows his customers
 - [ ] Replace the FB cover photo with a brand-matched one

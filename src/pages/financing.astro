@@ -4,6 +4,7 @@ import Hero from '../components/Hero.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import CtaBand from '../components/CtaBand.astro';
 import Icon from '../components/Icon.astro';
+import PaymentCalculator from '../components/PaymentCalculator.astro';
 import { services } from '../data/services';
 import hero from '../assets/photos/roofing-shingle/roofing-shingle-01.jpg';
 ---
@@ -12,7 +13,7 @@ import hero from '../assets/photos/roofing-shingle/roofing-shingle-01.jpg';
 
   <section class="bg-white py-20 md:py-28">
     <div class="container-apex grid gap-12 lg:grid-cols-2 lg:items-start">
-      <div>
+      <div class="order-2 lg:order-1">
         <SectionHeading eyebrow="How it works" title="Simple, straight, no surprises." />
         <ol class="mt-8 space-y-6">
           {[
@@ -22,7 +23,7 @@ import hero from '../assets/photos/roofing-shingle/roofing-shingle-01.jpg';
             ['We get to work', 'Same crew, same quality, same drone photos when it’s done.'],
           ].map(([t, b], i) => (
             <li class="flex gap-4">
-              <span class="font-display font-black text-3xl text-chrome shrink-0 w-12">0{i + 1}</span>
+              <span class="font-display font-black text-3xl text-apex-chrome shrink-0 w-12">0{i + 1}</span>
               <div>
                 <h3 class="h3 text-apex-charcoal">{t}</h3>
                 <p class="mt-1 text-apex-charcoal/80 leading-relaxed">{b}</p>
@@ -32,14 +33,12 @@ import hero from '../assets/photos/roofing-shingle/roofing-shingle-01.jpg';
         </ol>
         <p class="mt-8 text-sm text-apex-chrome-shadow">Financing subject to credit approval. Terms and availability may vary — ask us for current details.</p>
       </div>
-      <div class="bg-apex-black text-white p-8 md:p-10 clip-corner">
-        <p class="eyebrow text-apex-gold">Financing available on</p>
-        <ul class="mt-5 space-y-3">
+      <div class="order-1 lg:order-2 lg:sticky lg:top-28">
+        <PaymentCalculator />
+        <p class="mt-5 eyebrow text-xs text-apex-red">Financing available on</p>
+        <ul class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-apex-charcoal">
           {services.map((s) => (
-            <li class="flex items-center gap-3 font-display font-bold text-lg">
-              <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-apex-red"><Icon name={s.icon} class="w-4 h-4" /></span>
-              {s.name}
-            </li>
+            <li class="flex items-center gap-1.5"><Icon name={s.icon} class="w-3.5 h-3.5 text-apex-red" />{s.name}</li>
           ))}
         </ul>
       </div>

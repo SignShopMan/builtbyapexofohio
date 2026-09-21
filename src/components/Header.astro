@@ -26,11 +26,11 @@ const children = (href: string) =>
     </a>
 
     <nav class="hidden lg:block" aria-label="Primary">
-      <ul class="flex items-center gap-7">
+      <ul class="flex items-center gap-5 xl:gap-7">
         {site.nav.map(({ label, href }) => {
           const kids = children(href);
           const linkClass = [
-            'font-display font-semibold text-sm uppercase tracking-wide transition-colors hover:text-apex-gold',
+            'font-display font-semibold text-[13px] xl:text-sm uppercase tracking-wide whitespace-nowrap transition-colors hover:text-apex-gold',
             isActive(href) ? 'text-apex-gold' : 'text-white',
           ];
           return kids.length === 0 ? (
@@ -75,15 +75,22 @@ const children = (href: string) =>
       </ul>
     </nav>
 
-    <div class="hidden md:flex flex-col items-end leading-none">
+    <div class="hidden md:max-lg:flex xl:flex flex-col items-end leading-none">
       <span class="eyebrow text-apex-red text-[11px]">Call or Text</span>
       <a
         href={site.phoneHref}
-        class="font-display font-black text-xl lg:text-2xl tracking-tight text-white hover:text-apex-gold transition-colors"
+        class="font-display font-black text-xl xl:text-2xl tracking-tight whitespace-nowrap text-white hover:text-apex-gold transition-colors"
       >
         {site.phone}
       </a>
     </div>
+    <a
+      href={site.phoneHref}
+      class="hidden lg:max-xl:inline-flex items-center justify-center h-11 w-11 bg-apex-red text-white rounded-apex shrink-0"
+      aria-label={`Call ${site.phone}`}
+    >
+      <Icon name="phone" class="w-5 h-5" />
+    </a>
 
     <div class="flex items-center gap-3 lg:hidden">
       <a

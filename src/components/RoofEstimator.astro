@@ -1,0 +1,238 @@
+---
+/**
+ * "How big is my roof?" — rough roof-area estimator from homeowner inputs.
+ *
+ * Math (industry rule-of-thumb, see roofing estimating guides):
+ *   footprint = (L + 2·eave) × (W + 2·eave)         eave overhang ≈ 1.5 ft
+ *   roof area = footprint × pitch factor             pitch factor = √(1 + (rise/12)²)
+ *   squares   = roof area / 100 × (1 + waste)        waste 10–20% by complexity
+ * Complexity = gables + valleys + dormers; steep pitch and stories affect access.
+ * Output feeds a mailto/sms summary to the business inbox.
+ */
+import { site } from '../data/site';
+import Icon from './Icon.astro';
+
+const pitches = [
+  { v: 0,  l: 'Flat / low slope (under 2/12)' },
+  { v: 3,  l: '3/12 — gentle' },
+  { v: 4,  l: '4/12 — typical ranch' },
+  { v: 6,  l: '6/12 — typical two-story' },
+  { v: 8,  l: '8/12 — steep' },
+  { v: 10, l: '10/12 — very steep' },
+  { v: 12, l: '12/12 — 45°' },
+];
+const fieldCls = 'mt-1.5 w-full bg-apex-charcoal text-white border-2 border-transparent focus:border-apex-gold rounded-apex px-4 py-3 outline-none font-display font-bold';
+const labelCls = 'block';
+const capCls = 'eyebrow text-xs text-apex-chrome';
+---
+<div id="roof-calc" class="grid gap-8 lg:grid-cols-[1fr_380px]" data-email={site.email} data-sms={site.smsHref}>
+  <!-- Inputs -->
+  <form class="bg-apex-black text-white p-6 md:p-8 clip-corner space-y-6" novalidate>
+    <div>
+      <p class="eyebrow text-apex-gold">Roof size estimator</p>
+      <h2 class="font-display font-black text-2xl md:text-3xl mt-1">How big is my roof?</h2>
+      <p class="mt-2 text-sm text-apex-chrome">Answer what you can — a rough guess beats a blank. We'll measure for real before quoting.</p>
+    </div>
+
+    <fieldset>
+      <legend class={capCls}>Property type</legend>
+      <div class="mt-2 grid grid-cols-2 gap-1 bg-apex-charcoal p-1 rounded-apex" role="radiogroup">
+        {[['residential', 'Residential'], ['commercial', 'Commercial']].map(([v, l], i) => (
+          <button type="button" role="radio" aria-checked={i === 0 ? 'true' : 'false'} data-type={v}
+            class="py-2.5 text-sm font-display font-bold rounded-apex transition-colors aria-checked:bg-apex-red aria-checked:text-white text-apex-chrome hover:text-white">{l}</button>
+        ))}
+      </div>
+    </fieldset>
+
+    <div class="grid grid-cols-2 gap-4">
+      <label class={labelCls}>
+        <span class={capCls}>Building length (ft)</span>
+        <input name="length" type="number" inputmode="numeric" min="10" max="600" value="50" class={fieldCls} />
+      </label>
+      <label class={labelCls}>
+        <span class={capCls}>Building width (ft)</span>
+        <input name="width" type="number" inputmode="numeric" min="10" max="600" value="30" class={fieldCls} />
+      </label>
+    </div>
+    <p class="-mt-3 text-xs text-apex-chrome-shadow">Outside walls, not living area. Don't know? Living sq ft ÷ stories ≈ footprint — a 1,500 sq ft ranch is about 50 × 30.</p>
+
+    <label class={labelCls}>
+      <span class={capCls}>Attached garage / porch footprint (sq ft, optional)</span>
+      <input name="extra" type="number" inputmode="numeric" min="0" max="5000" value="0" class={fieldCls} />
+    </label>
+
+    <label class={labelCls}>
+      <span class={capCls}>Roof pitch</span>
+      <select name="pitch" class={fieldCls}>
+        {pitches.map((p) => <option value={p.v} selected={p.v === 6}>{p.l}</option>)}
+      </select>
+    </label>
+
+    <div class="grid grid-cols-3 gap-4">
+      <label class={labelCls}>
+        <span class={capCls}>Stories</span>
+        <select name="stories" class={fieldCls}>{[1, 2, 3].map((n) => <option value={n}>{n}</option>)}</select>
+      </label>
+      <label class={labelCls}>
+        <span class={capCls}>Gables</span>
+        <input name="gables" type="number" inputmode="numeric" min="0" max="20" value="2" class={fieldCls} />
+      </label>
+      <label class={labelCls}>
+        <span class={capCls}>Valleys</span>
+        <input name="valleys" type="number" inputmode="numeric" min="0" max="20" value="0" class={fieldCls} />
+      </label>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <label class={labelCls}>
+        <span class={capCls}>Dormers / skylights / chimneys</span>
+        <input name="penetrations" type="number" inputmode="numeric" min="0" max="20" value="1" class={fieldCls} />
+      </label>
+      <label class={labelCls}>
+        <span class={capCls}>Existing shingle layers</span>
+        <select name="layers" class={fieldCls}>
+          <option value="1">1 layer</option>
+          <option value="2">2 layers</option>
+          <option value="3">3+ layers</option>
+          <option value="0">Metal / other</option>
+        </select>
+      </label>
+    </div>
+  </form>
+
+  <!-- Results + send -->
+  <div class="space-y-5 lg:sticky lg:top-28 self-start">
+    <div class="bg-apex-charcoal text-white p-6 clip-corner">
+      <p class="eyebrow text-xs text-apex-gold">Your estimate*</p>
+      <p class="mt-2 font-display font-black leading-none">
+        <span class="text-5xl md:text-6xl text-chrome" data-squares>—</span>
+        <span class="block eyebrow text-white mt-1">roofing squares</span>
+      </p>
+      <dl class="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
+        <div><dt class="text-apex-chrome">Roof area</dt><dd class="font-display font-bold text-lg" data-area>—</dd></div>
+        <div><dt class="text-apex-chrome">Complexity</dt><dd class="font-display font-bold text-lg" data-complexity>—</dd></div>
+        <div><dt class="text-apex-chrome">Job size</dt><dd class="font-display font-bold text-lg" data-size>—</dd></div>
+        <div><dt class="text-apex-chrome">Type</dt><dd class="font-display font-bold text-lg" data-ptype>Residential</dd></div>
+      </dl>
+      <p class="mt-4 text-xs text-apex-chrome" data-notes></p>
+    </div>
+
+    <form class="bg-apex-black text-white p-6 clip-corner space-y-4" data-send novalidate>
+      <p class="eyebrow text-xs text-apex-gold">Send it to us</p>
+      <p class="text-sm text-apex-chrome">We'll pull up the property, check your numbers, and get back to you with a real estimate.</p>
+      <label class={labelCls}><span class={capCls}>Name</span><input name="name" type="text" autocomplete="name" class={fieldCls} /></label>
+      <label class={labelCls}><span class={capCls}>Phone</span><input name="phone" type="tel" autocomplete="tel" class={fieldCls} /></label>
+      <label class={labelCls}><span class={capCls}>Property address</span><input name="address" type="text" autocomplete="street-address" placeholder="123 Main St, Bellefontaine" class={fieldCls} /></label>
+      <div class="flex flex-col sm:flex-row gap-3 pt-1">
+        <button type="submit" data-action="email" class="flex-1 inline-flex items-center justify-center gap-2 bg-apex-red hover:bg-apex-red-deep text-white font-display font-bold uppercase tracking-button text-sm px-5 py-3.5 rounded-apex transition-colors">
+          <Icon name="mail" class="w-4 h-4" /> Email my estimate
+        </button>
+        <button type="button" data-action="sms" class="flex-1 inline-flex items-center justify-center gap-2 border-2 border-apex-gold text-apex-gold hover:bg-apex-gold hover:text-apex-black font-display font-bold uppercase tracking-button text-sm px-5 py-3.5 rounded-apex transition-colors">
+          <Icon name="phone" class="w-4 h-4" /> Text it instead
+        </button>
+      </div>
+      <p class="text-[11px] text-apex-chrome-shadow">Opens your email or messaging app with the numbers filled in — nothing is sent until you hit send.</p>
+    </form>
+
+    <p class="text-[11px] leading-relaxed text-apex-chrome-shadow">
+      * This is a rough estimate calculated from the numbers you entered, using standard pitch and waste factors. It is not a measurement, a quote, or a price. Actual roof area, material quantities, tear-off, decking, flashing, ventilation, and access all affect the real cost and are only determined by an on-site inspection by {site.name}. Estimates are for informational purposes only and do not create any obligation on either party.
+    </p>
+  </div>
+</div>
+
+<script>
+  const root = document.getElementById('roof-calc');
+  if (root) {
+    const form = root.querySelector<HTMLFormElement>('form:not([data-send])')!;
+    const send = root.querySelector<HTMLFormElement>('form[data-send]')!;
+    const out = {
+      squares: root.querySelector<HTMLElement>('[data-squares]')!,
+      area: root.querySelector<HTMLElement>('[data-area]')!,
+      complexity: root.querySelector<HTMLElement>('[data-complexity]')!,
+      size: root.querySelector<HTMLElement>('[data-size]')!,
+      ptype: root.querySelector<HTMLElement>('[data-ptype]')!,
+      notes: root.querySelector<HTMLElement>('[data-notes]')!,
+    };
+    let ptype = 'residential';
+    let last = { squares: 0, area: 0, complexity: '', size: '', pitch: 0 };
+
+    const num = (n: string) => Number((form.elements.namedItem(n) as HTMLInputElement).value) || 0;
+
+    const calc = () => {
+      const L = num('length'), W = num('width'), extra = num('extra');
+      const rise = num('pitch'), stories = num('stories');
+      const gables = num('gables'), valleys = num('valleys'), pen = num('penetrations'), layers = num('layers');
+      if (L < 10 || W < 10) { out.squares.textContent = '—'; return; }
+
+      const eave = 1.5;
+      const footprint = (L + 2 * eave) * (W + 2 * eave) + extra;
+      const pitchFactor = Math.sqrt(1 + Math.pow(rise / 12, 2));
+      const area = footprint * pitchFactor;
+
+      const cx = gables + valleys * 1.5 + pen * 0.5;
+      const complexity = cx <= 3 ? 'Simple' : cx <= 7 ? 'Moderate' : 'Complex';
+      const waste = complexity === 'Simple' ? 0.10 : complexity === 'Moderate' ? 0.15 : 0.20;
+      const squares = Math.ceil((area / 100) * (1 + waste));
+
+      const size = squares < 15 ? 'Small' : squares < 30 ? 'Medium' : squares < 50 ? 'Large' : 'Extra large';
+
+      const notes: string[] = [];
+      if (rise >= 8) notes.push('steep pitch — extra safety setup');
+      if (stories >= 2) notes.push(`${stories}-story access`);
+      if (layers >= 2) notes.push(`${layers === 3 ? '3+' : layers} layers to tear off`);
+      if (layers === 0) notes.push('existing metal/other roof');
+      if (valleys >= 3) notes.push('multiple valleys');
+      if (ptype === 'commercial') notes.push('commercial — we’ll ask about the deck and membrane');
+
+      last = { squares, area: Math.round(area), complexity, size, pitch: rise };
+      out.squares.textContent = String(squares);
+      out.area.textContent = `${Math.round(area).toLocaleString()} sq ft`;
+      out.complexity.textContent = complexity;
+      out.size.textContent = size;
+      out.ptype.textContent = ptype === 'commercial' ? 'Commercial' : 'Residential';
+      out.notes.textContent = notes.length ? `Also noted: ${notes.join(' · ')}.` : '';
+    };
+
+    form.addEventListener('input', calc);
+    root.querySelectorAll<HTMLButtonElement>('[data-type]').forEach((b) =>
+      b.addEventListener('click', () => {
+        root.querySelectorAll('[data-type]').forEach((x) => x.setAttribute('aria-checked', 'false'));
+        b.setAttribute('aria-checked', 'true');
+        ptype = b.dataset.type!;
+        calc();
+      }),
+    );
+    calc();
+
+    const summary = () => {
+      const g = (n: string) => (send.elements.namedItem(n) as HTMLInputElement).value.trim();
+      const f = (n: string) => (form.elements.namedItem(n) as HTMLInputElement | HTMLSelectElement).value;
+      const pitchLabel = (form.elements.namedItem('pitch') as HTMLSelectElement).selectedOptions[0].text;
+      return [
+        `Roof estimate request from builtbyapexofohio.com`,
+        ``,
+        `Name: ${g('name') || '(not given)'}`,
+        `Phone: ${g('phone') || '(not given)'}`,
+        `Address: ${g('address') || '(not given)'}`,
+        ``,
+        `Type: ${ptype}`,
+        `Footprint: ${f('length')} x ${f('width')} ft + ${f('extra')} sq ft garage/porch`,
+        `Pitch: ${pitchLabel}`,
+        `Stories: ${f('stories')} | Gables: ${f('gables')} | Valleys: ${f('valleys')} | Dormers/skylights/chimneys: ${f('penetrations')}`,
+        `Existing layers: ${f('layers') === '0' ? 'metal/other' : f('layers')}`,
+        ``,
+        `Estimated: ~${last.area.toLocaleString()} sq ft, ~${last.squares} squares, ${last.complexity.toLowerCase()} complexity, ${last.size.toLowerCase()} job`,
+      ].join('\n');
+    };
+
+    send.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const body = encodeURIComponent(summary());
+      const subject = encodeURIComponent(`Roof estimate request — ${(send.elements.namedItem('address') as HTMLInputElement).value.trim() || 'new lead'}`);
+      window.location.href = `mailto:${root.dataset.email}?subject=${subject}&body=${body}`;
+    });
+    send.querySelector('[data-action="sms"]')!.addEventListener('click', () => {
+      window.location.href = `${root.dataset.sms}?&body=${encodeURIComponent(summary())}`;
+    });
+  }
+</script>

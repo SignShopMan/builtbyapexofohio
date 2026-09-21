@@ -19,6 +19,13 @@ export const site = {
 
   facebook: 'https://www.facebook.com/profile.php?id=61581786302751',
 
+  /**
+   * Hearth financing link (from the Hearth dashboard → "Financing link").
+   * Leave empty until the client provides it — the calculator's Apply button
+   * falls back to /contact.
+   */
+  hearthUrl: '',
+
   address: {
     locality: 'Bellefontaine',
     region: 'OH',
@@ -53,6 +60,7 @@ export const site = {
     { label: 'Services', href: '/services' },
     { label: 'Our Work', href: '/gallery' },
     { label: 'Financing', href: '/financing' },
+    { label: 'Roof Estimator', href: '/roof-estimator' },
     { label: 'About', href: '/about' },
     { label: 'Contact', href: '/contact' },
   ],

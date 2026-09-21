@@ -1,0 +1,35 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import RoofEstimator from '../components/RoofEstimator.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import CtaBand from '../components/CtaBand.astro';
+import hero from '../assets/photos/roofing-shingle/roofing-shingle-27.jpg';
+---
+<Base title="Roof Size Estimator" description="Estimate how many roofing squares your roof is from a few measurements — pitch, gables, valleys, stories — then send it to Apex Exteriors Services for a real quote.">
+  <Hero compact cta={false} image={hero} alt="Top-down drone view of a dark gray hip roof" eyebrow="Roof estimator" title="How big is my roof?" lead="Roofers measure in “squares” — 100 sq ft each. Punch in a few numbers and get a rough idea of the size of the job before we ever come out." />
+
+  <section class="bg-white py-16 md:py-24">
+    <div class="container-apex">
+      <RoofEstimator />
+    </div>
+  </section>
+
+  <section class="bg-apex-gray-light py-16 md:py-20">
+    <div class="container-apex grid gap-10 lg:grid-cols-3">
+      <SectionHeading eyebrow="How it works" title="What the numbers mean." class="lg:col-span-3" />
+      {[
+        ['Squares', 'One square = 100 sq ft of roof surface. A typical Logan County ranch is 15–25 squares; a two-story with a garage is 25–40.'],
+        ['Pitch', 'Steeper roofs have more surface than their footprint — a 6/12 pitch adds about 12%, a 12/12 adds 41%. Steep roofs also take more setup to work safely.'],
+        ['Complexity', 'Every gable, valley, dormer, and chimney adds cuts, flashing, and waste. Simple roofs run ~10% waste; cut-up roofs run 15–20%.'],
+      ].map(([t, b]) => (
+        <div class="bg-white p-6 border-t-4 border-apex-red">
+          <h3 class="h3 text-apex-charcoal">{t}</h3>
+          <p class="mt-2 text-apex-charcoal/80 leading-relaxed">{b}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <CtaBand variant="estimate" />
+</Base>
